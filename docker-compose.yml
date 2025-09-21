@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=lucasfrgabriel
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=dbRand
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=dbRand
+      - DB_POSTGRESDB_USER=lucasfrgabriel
+      - DB_POSTGRESDB_PASSWORD=12345
+      - NODE_FUNCTION_ALLOW_EXTERNAL=fs,path
+      - N8N_CUSTOM_EXTENSIONS_DIR=/home/node/.n8n/custom/
+    ports:
+      - "5678:5678"
+    volumes:
+      - .n8n_data:/home/node/.n8n
+      - ./:/home/node/.n8n/custom
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
