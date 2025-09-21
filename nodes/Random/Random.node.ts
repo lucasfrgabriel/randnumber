@@ -5,6 +5,8 @@ import {
   INodeTypeDescription,
 } from "n8n-workflow";
 
+import { getRandom } from "./RandomService";
+
 export class Random implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Random",
@@ -56,7 +58,6 @@ export class Random implements INodeType {
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 
     const items = this.getInputData();
-    let responseData;
     const returnData = [];
 
     for (let i = 0; i < items.length; i++) {
@@ -64,18 +65,7 @@ export class Random implements INodeType {
         const min = this.getNodeParameter('minNumber', i, 1) as number;
         const max = this.getNodeParameter('maxNumber', i, 100) as number;
 
-        const randomOrgUrl = `https://www.random.org/integers/?num=1&min=${min}&max=${max}&col=1&base=10&format=plain&rnd=new`;
-		
-        const fetch = (globalThis as any).fetch || require('node-fetch');
-        const res = await fetch(randomOrgUrl);
-
-        if(!res.ok) {
-          throw new Error(`Error fetching random number: ${res.statusText}`);
-        }
-
-		    responseData = await res.text();
-
-        const randomNumber = parseInt(responseData.trim(), 10);
+        const randomNumber = await getRandom(min, max);
 
         returnData.push({
           json: { randomNumber: randomNumber },
@@ -89,7 +79,7 @@ export class Random implements INodeType {
           throw error;
       }
     }
-    
+
     return [this.helpers.returnJsonArray(returnData)];
   }
 }
