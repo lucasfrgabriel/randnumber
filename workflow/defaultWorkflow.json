@@ -1,0 +1,178 @@
+{
+  "name": "Random generator workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5d05f365-8caf-4e2f-8b49-362a65489f3c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {},
+      "type": "CUSTOM.random",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0030fbb3-e6ee-4162-b32c-a0273b67bbee",
+      "name": "Random"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "random_numbers",
+          "mode": "list",
+          "cachedResultName": "random_numbers"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "generated_number": "={{ $json.randomNumber }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "generated_number",
+              "displayName": "generated_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        416,
+        0
+      ],
+      "id": "52064e54-d766-4deb-8184-0a3d273dd541",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "ca073oEIKlCocGZ5",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "random_numbers",
+          "mode": "list",
+          "cachedResultName": "random_numbers"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        0
+      ],
+      "id": "4b5fca6a-a08b-4ba2-a5c9-423c054ea0eb",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "ca073oEIKlCocGZ5",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Random",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bfdf84f0-593a-46a0-81d3-64cdef0e89b0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b926fd46a724f0d591f876c38e0094a1bad0f5b24bef3ea0008f4dd364581155"
+  },
+  "id": "DYXR4VN6fjaG5ARg",
+  "tags": []
+}
