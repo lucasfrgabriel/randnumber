@@ -55,6 +55,41 @@ export class Random implements INodeType {
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 
-    return [this.helpers.returnJsonArray({})];
+    const items = this.getInputData();
+    let responseData;
+    const returnData = [];
+
+    for (let i = 0; i < items.length; i++) {
+      try {
+        const min = this.getNodeParameter('minNumber', i, 1) as number;
+        const max = this.getNodeParameter('maxNumber', i, 100) as number;
+
+        const randomOrgUrl = `https://www.random.org/integers/?num=1&min=${min}&max=${max}&col=1&base=10&format=plain&rnd=new`;
+		
+        const fetch = (globalThis as any).fetch || require('node-fetch');
+        const res = await fetch(randomOrgUrl);
+
+        if(!res.ok) {
+          throw new Error(`Error fetching random number: ${res.statusText}`);
+        }
+
+		    responseData = await res.text();
+
+        const randomNumber = parseInt(responseData.trim(), 10);
+
+        returnData.push({
+          json: { randomNumber: randomNumber },
+        });
+
+      } catch (error) {
+          if (this.continueOnFail()) {
+            returnData.push({ json: { error: (error as Error).message } });
+            continue;
+          }
+          throw error;
+      }
+    }
+    
+    return [this.helpers.returnJsonArray(returnData)];
   }
 }
