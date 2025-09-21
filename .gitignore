@@ -1,0 +1,12 @@
+.n8n/
+n8n-data/
+
+node_modules/
+
+*.log
+logs/
+
+.DS_Store
+Thumbs.db
+
+.vscode/
