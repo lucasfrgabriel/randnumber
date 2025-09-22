@@ -1,3 +1,5 @@
+// Faz a requisição para o Random.org e retorna um número aleatório entre min e max
+
 export async function getRandom(min: number, max: number) {
     const randomOrgUrl = `https://www.random.org/integers/?num=1&min=${Math.trunc(min)}&max=${Math.trunc(max)}&col=1&base=10&format=plain&rnd=new`;
         

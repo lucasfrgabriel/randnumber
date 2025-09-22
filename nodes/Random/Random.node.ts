@@ -7,6 +7,8 @@ import {
 
 import { getRandom } from "./RandomService";
 
+// Configuração do nó Random para n8n
+
 export class Random implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Random",
@@ -55,6 +57,11 @@ export class Random implements INodeType {
     ],
   };
 
+/*
+ * Pega os parâmetros min e max inseridos no n8n,
+ * chama a função getRandom e retorna o número aleatório para a saída do nó
+*/
+  
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 
     const items = this.getInputData();
